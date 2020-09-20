@@ -11,24 +11,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './Account.css';
+import IAccount from './IAccountModels'
 import accountApi from "./AccountApi";
 
-interface IHolder {
-    name:string
-}
-interface IHolderBank {
-    bic:string
-}
 
-interface IAccount {
-    id:string,
-    accountNumber:string,
-    amount:number,
-    currency:string,
-    holder:IHolder,
-    holderBank:IHolderBank
-}
-
+//
 const currencies = ["EUR", "USD", "GBP"];
 
 const AccountList = () => {
@@ -78,6 +65,7 @@ const AccountList = () => {
       }, []);
     const currencySymbol = currency==="EUR"?"€":(currency==="USD"?"$":"£");
     return <div>
+        <h2>Account List</h2>
         {loading&&<div className="loadingContainer"><CircularProgress /></div>}
         {error&&<div className="errorContainer">{error}</div>}
         <Select
@@ -110,7 +98,7 @@ const AccountList = () => {
                         <TableCell>{currency==="EUR"?row.amount:(row.amount*rate)}/{currencySymbol}</TableCell>
                 </TableRow>
                 )):
-                <div key={0} className="text-center">No data</div>
+                <TableRow key={0} className="text-center"><TableCell>No data</TableCell></TableRow>
                 }
                 </TableBody>
             </Table>
