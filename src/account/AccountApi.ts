@@ -1,36 +1,49 @@
 const corsPath = "https://cors-anywhere.herokuapp.com/";
 const apiPath= "api.ibanfirst.com/PublicAPI/";
 
+interface IResponse  {
+    status?:number,
+    errorMessage?:string,
+    accounts?:any
+}
+
 const accountApi = {
     async get() {
-        const response = await fetch(`${corsPath}platform.ibanfirst.com/js/dataTestDevFront.json`, {
-            headers: {
-                Accept: 'application/json'
-            }
-        });
-
-        const json = await response.json();
-
-        if (response.ok) {
-            return json;
-        } else {
-            throw new Error(json['stack-trace']);
+        let json:IResponse={};
+        let response;
+        try {
+            response = await fetch(`${corsPath}platform.ibanfirst.com/js/dataTestDevFront.json`, {
+                headers: {
+                    Accept: 'application/json'
+                }
+            });
+            json = await response.json();
         }
+        catch (e) {
+            const {status, statusText} = response;
+            json.status =status;
+            json.errorMessage = statusText;
+        }
+        return json;
     },
     async getRate(instrument:string) {
-        const response = await fetch(`${corsPath}${apiPath}/Rate/${instrument}`, {
-            headers: {
-                Accept: 'application/json'
-            }
-        });
-
-        const json = await response.json();
-
-        if (response.ok) {
-            return json;
-        } else {
-            throw new Error(json['stack-trace']);
+        let json:IResponse={};
+        let response;
+        try {
+            response = await fetch(`${corsPath}${apiPath}/Rate/${instrument}`, {
+                headers: {
+                    Accept: 'application/json'
+                }
+            });
+    
+            json = await response.json();
         }
+        catch(e) {
+            const {status, statusText} = response;
+            json.status =status;
+            json.errorMessage = statusText;
+        }
+        return json;            
     },
 }
 export default accountApi;

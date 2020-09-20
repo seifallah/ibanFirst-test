@@ -36,20 +36,33 @@ const AccountList = () => {
     const [currency, setCurrency] = useState("EUR");
     const [rate, setRate] = useState(1);
     const [loading, setloading] = useState(false);
+    const [error, setError] = useState("");
 
     const fetechAccounts = async () => {
         setloading(true);
         const result = await accountApi.get();
-        //@ts-ignore
-        setAccounts(result.accounts.sort((a, b) => b.amount - a.amount));
+        console.log("result", result)   
+        if(result.accounts) {
+            //@ts-ignore
+            setAccounts(result.accounts.sort((a, b) => b.amount - a.amount));
+        }
+        else {
+            setError("An error occured occured, please try again later");
+        }
         setloading(false)
     };
 
     const handleChange = async (event) => {
         setloading(true);
-        const {rate} = await accountApi.getRate(currency+event.target.value);
-        setRate(rate.rate)
-        setCurrency(event.target.value);
+        const response = await accountApi.getRate(currency+event.target.value);
+        if(response.status===200) {
+           //@ts-ignore
+            setRate(response.rate.rate)
+            setCurrency(event.target.value);
+        } else {
+            //@ts-ignore
+            setError(response.errorMessage);
+        }
         setloading(false);
     };
 
@@ -57,15 +70,16 @@ const AccountList = () => {
         fetechAccounts();
     }, []);
     
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         fetechAccounts();
-    //     }, 15000);
-    //     return () => clearInterval(interval);
-    //   }, []);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetechAccounts();
+        }, 15000);
+        return () => clearInterval(interval);
+      }, []);
 
     return <div>
         {loading&&<div className="loadingContainer"><CircularProgress /></div>}
+        {error&&<div className="errorContainer">{error}</div>}
         <Select
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
@@ -88,14 +102,16 @@ const AccountList = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                {accounts.map((row:IAccount) => (
+                {accounts.length>0?accounts.map((row:IAccount) => (
                     <TableRow key={row.id}>
                         <TableCell component="th" scope="row">{row.holder.name}</TableCell>
                         <TableCell>{row.accountNumber}</TableCell>
                         <TableCell>{row.holderBank.bic}</TableCell>
                         <TableCell>{currency==="EUR"?row.amount:(row.amount*rate)}/{currency}</TableCell>
-                    </TableRow>
-                ))}
+                </TableRow>
+                )):
+                <div key={0} className="text-center">No data</div>
+                }
                 </TableBody>
             </Table>
             </TableContainer>
