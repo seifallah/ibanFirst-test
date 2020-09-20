@@ -76,7 +76,7 @@ const AccountList = () => {
         }, 15000);
         return () => clearInterval(interval);
       }, []);
-
+    const currencySymbol = currency==="EUR"?"€":(currency==="USD"?"$":"£");
     return <div>
         {loading&&<div className="loadingContainer"><CircularProgress /></div>}
         {error&&<div className="errorContainer">{error}</div>}
@@ -107,7 +107,7 @@ const AccountList = () => {
                         <TableCell component="th" scope="row">{row.holder.name}</TableCell>
                         <TableCell>{row.accountNumber}</TableCell>
                         <TableCell>{row.holderBank.bic}</TableCell>
-                        <TableCell>{currency==="EUR"?row.amount:(row.amount*rate)}/{currency}</TableCell>
+                        <TableCell>{currency==="EUR"?row.amount:(row.amount*rate)}/{currencySymbol}</TableCell>
                 </TableRow>
                 )):
                 <div key={0} className="text-center">No data</div>
