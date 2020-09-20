@@ -8,7 +8,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
+import './Account.css';
 import accountApi from "./AccountApi";
 
 interface IHolder {
@@ -33,32 +35,37 @@ const AccountList = () => {
     const [accounts, setAccounts] = useState([]);
     const [currency, setCurrency] = useState("EUR");
     const [rate, setRate] = useState(1);
+    const [loading, setloading] = useState(false);
 
     const fetechAccounts = async () => {
+        setloading(true);
         const result = await accountApi.get();
         //@ts-ignore
-        const sortedAccounts = result.accounts.sort((a, b) => b.amount - a.amount)
-        setAccounts(result.accounts);
+        setAccounts(result.accounts.sort((a, b) => b.amount - a.amount));
+        setloading(false)
     };
 
     const handleChange = async (event) => {
+        setloading(true);
         const {rate} = await accountApi.getRate(currency+event.target.value);
         setRate(rate.rate)
         setCurrency(event.target.value);
+        setloading(false);
     };
 
     useEffect(() => {
         fetechAccounts();
     }, []);
     
-    useEffect(() => {
-        const interval = setInterval(() => {
-            fetechAccounts();
-        }, 15000);
-        return () => clearInterval(interval);
-      }, []);
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         fetechAccounts();
+    //     }, 15000);
+    //     return () => clearInterval(interval);
+    //   }, []);
 
     return <div>
+        {loading&&<div className="loadingContainer"><CircularProgress /></div>}
         <Select
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
@@ -67,7 +74,7 @@ const AccountList = () => {
           label="currency"
         >
         {
-            currencies.map(currency => <MenuItem value={currency}>{currency}</MenuItem>)
+            currencies.map((currency, index) => <MenuItem key={index} value={currency}>{currency}</MenuItem>)
         }
         </Select>
         <TableContainer component={Paper}>
