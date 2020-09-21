@@ -1,4 +1,4 @@
-import  React, { useEffect, useState }  from "react";
+import  React, { useEffect, useState, useMemo }  from "react";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -28,7 +28,6 @@ const AccountList = () => {
     const fetechAccounts = async () => {
         setloading(true);
         const result = await accountApi.get();
-        console.log("result", result)   
         if(result.accounts) {
             //@ts-ignore
             setAccounts(result.accounts.sort((a, b) => b.amount - a.amount));
@@ -68,17 +67,20 @@ const AccountList = () => {
         <h2>Account List</h2>
         {loading&&<div className="loadingContainer"><CircularProgress /></div>}
         {error&&<div className="errorContainer">{error}</div>}
-        <Select
-          labelId="demo-simple-select-outlined-label"
-          id="demo-simple-select-outlined"
-          value={currency}
-          onChange={handleChange}
-          label="currency"
-        >
         {
-            currencies.map((currency, index) => <MenuItem key={index} value={currency}>{currency}</MenuItem>)
-        }
-        </Select>
+        useMemo(() => <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={currency}
+                onChange={handleChange}
+                label="currency"
+                >
+                {
+                    currencies.map((currency, index) => <MenuItem key={index} value={currency}>{currency}</MenuItem>)
+                }
+                </Select>,
+            [currency]
+        )}
         <TableContainer component={Paper}>
             <Table className={"table"} aria-label="simple table">
                 <TableHead>
