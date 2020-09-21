@@ -19,6 +19,7 @@ Un dossier nommé "account" a été crée pour représenter la liste des comptes
 
 # Comment ça marche:
 Dés le démarrage de la page, un **fetch** vers l'api va être émis, si il y a pas d'erreur au niveau de réponse, la table va être affiché, si non un alert d'erreur va apparaître contenant un message d'erreur.
+En définissant un intervalle de 15 secondes, l'application s'actualisera automatiquement.
 On changeant le devise dans la select, un autre appel api va être émis, entre temps un loading s'affichera jusqu'à une réponse est reçu. 
 
 ## Installation
