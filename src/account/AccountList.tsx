@@ -6,6 +6,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -13,6 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import './Account.css';
 import IAccount from './IAccountModels'
 import accountApi from "./AccountApi";
+import { InputLabel, Grid } from "@material-ui/core";
 
 
 //
@@ -68,9 +70,15 @@ const AccountList = () => {
         {loading&&<div className="loadingContainer"><CircularProgress /></div>}
         {error&&<div className="errorContainer">{error}</div>}
         {
-        useMemo(() => <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
+        useMemo(() => 
+        <Grid container spacing={3} className={"header"}>
+            <Grid item xs={12}>
+            <Paper>
+            <FormControl>
+            <InputLabel id="demo-simple-select-label">Current currency</InputLabel>
+            <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
                 value={currency}
                 onChange={handleChange}
                 label="currency"
@@ -78,9 +86,15 @@ const AccountList = () => {
                 {
                     currencies.map((currency, index) => <MenuItem key={index} value={currency}>{currency}</MenuItem>)
                 }
-                </Select>,
-            [currency]
-        )}
+                </Select>
+            </FormControl>
+           
+            </Paper>
+            </Grid>
+        </Grid>,
+         [currency]
+         )}
+ 
         <TableContainer component={Paper}>
             <Table className={"table"} aria-label="simple table">
                 <TableHead>

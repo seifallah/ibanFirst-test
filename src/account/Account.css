@@ -27,3 +27,9 @@
 .text-center {
     text-align: center;
 }
+.header.MuiGrid-container {
+    margin-bottom: 10px;
+}
+.header .MuiFormControl-root {
+    width: 100%;
+}
