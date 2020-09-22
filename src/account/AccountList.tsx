@@ -17,7 +17,6 @@ import accountApi from "./AccountApi";
 import { InputLabel, Grid } from "@material-ui/core";
 
 
-//
 const currencies = ["EUR", "USD", "GBP"];
 
 const AccountList = () => {
@@ -64,14 +63,8 @@ const AccountList = () => {
         }, 15000);
         return () => clearInterval(interval);
       }, []);
-    const currencySymbol = currency==="EUR"?"€":(currency==="USD"?"$":"£");
-    return <div>
-        <h2>Account List</h2>
-        {loading&&<div className="loadingContainer"><CircularProgress /></div>}
-        {error&&<div className="errorContainer">{error}</div>}
-        {
-        useMemo(() => 
-        <Grid container spacing={3} className={"header"}>
+        const currencySymbol = currency==="EUR"?"€":(currency==="USD"?"$":"£");
+        const renderSelectCurrency = useMemo( () => <Grid container spacing={3} className={"header"}>
             <Grid item xs={12}>
             <Paper>
             <FormControl>
@@ -88,12 +81,18 @@ const AccountList = () => {
                 }
                 </Select>
             </FormControl>
-           
+        
             </Paper>
             </Grid>
         </Grid>,
-         [currency]
-         )}
+            [currency]
+            );
+    
+    return <div>
+        <h2>Account List</h2>
+        {loading&&<div className="loadingContainer"><CircularProgress /></div>}
+        {error&&<div className="errorContainer">{error}</div>}
+        { renderSelectCurrency }
  
         <TableContainer component={Paper}>
             <Table className={"table"} aria-label="simple table">
@@ -111,7 +110,7 @@ const AccountList = () => {
                         <TableCell component="th" scope="row">{row.holder.name}</TableCell>
                         <TableCell>{row.accountNumber}</TableCell>
                         <TableCell>{row.holderBank.bic}</TableCell>
-                        <TableCell>{currency==="EUR"?row.amount:(row.amount*rate)}/{currencySymbol}</TableCell>
+                        <TableCell><b>{currencySymbol} </b>{currency==="EUR"?row.amount:(row.amount*rate)}</TableCell>
                 </TableRow>
                 )):
                 <TableRow key={0} className="text-center"><TableCell>No data</TableCell></TableRow>
